@@ -14,14 +14,14 @@
       ".github": false, // Somente o teste de CI
       "build": false, // Somente o icon do APP
       "dist-ts": false, // Pasta com os maps do ts
-      ".vscode": false,
+      ".vscode": true,
 
       // Arquivos
       ".env": false,
-      ".gitignore": false,
-      "opencode.json": false,
-      ".gitattributes": false,
-      "package-lock.json": false,
+      ".gitignore": true,
+      "opencode.json": true,
+      ".gitattributes": true,
+      "package-lock.json": true,
 
       // Arquivos de configuração
       "tsconfig.json": false,
@@ -36,7 +36,7 @@
 
       "scripts": false, // ATIVAR
 
-      "AGENTS.md": false, // ATIVAR
+      "AGENTS.md": true, // ATIVAR
       "node_modules": true,
     },
 

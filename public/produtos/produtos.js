@@ -13,26 +13,36 @@ async function carregarProdutos() {
     <table>
       <thead>
         <tr>
-          <th>Nome</th>
+          <th>Código</th>
+          <th>Descrição</th>
           <th>Preço</th>
           <th>Ativo</th>
           ${podeEditar ? "<th>Ações</th>" : ""}
         </tr>
       </thead>
       <tbody>
-        ${produtos.map((p) => `
+        ${produtos
+          .map(
+            (p) => `
           <tr>
             <td>${p.nome}</td>
+            <td>${p.descricao}</td>
             <td>${FormatarMoeda(p.preco)}</td>
             <td>${p.ativo ? "Sim" : "Não"}</td>
-            ${podeEditar ? `
+            ${
+              podeEditar
+                ? `
               <td class="acoes">
                 <button onclick="editarProduto('${p.id}')">Editar</button>
                 <button class="btn-perigo" onclick="removerProduto('${p.id}')">Remover</button>
               </td>
-            ` : ""}
+            `
+                : ""
+            }
           </tr>
-        `).join("")}
+        `,
+          )
+          .join("")}
       </tbody>
     </table>
   `;
@@ -48,7 +58,7 @@ function abrirFormProduto(dados) {
     <h3>${produtoEditandoId ? "Editar" : "Novo"} Produto</h3>
     <div class="linha">
       <div class="campo">
-        <label>Nome</label>
+        <label>Código</label>
         <input id="prod-nome" value="${dados?.nome || ""}" />
       </div>
       <div class="campo">

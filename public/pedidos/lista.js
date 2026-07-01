@@ -29,7 +29,9 @@ async function carregarListaPedidos() {
         </tr>
       </thead>
       <tbody>
-        ${pedidos.map((p) => `
+        ${pedidos
+          .map(
+            (p) => `
           <tr>
             <td><strong>${p.numero_pedido}</strong></td>
             <td>${p.cliente?.nome || "-"}</td>
@@ -41,7 +43,9 @@ async function carregarListaPedidos() {
               <button onclick="verDetalhePedido('${p.id}')">Detalhe</button>
             </td>
           </tr>
-        `).join("")}
+        `,
+          )
+          .join("")}
       </tbody>
     </table>
   `;
@@ -52,7 +56,9 @@ async function filtrarPedidos() {
   const pedidos = await window.electronAPI.listarPedidos(status ? { status } : {});
   const tbody = document.querySelector("#tela-pedidos-lista table tbody");
   if (tbody) {
-    tbody.innerHTML = pedidos.map((p) => `
+    tbody.innerHTML = pedidos
+      .map(
+        (p) => `
       <tr>
         <td><strong>${p.numero_pedido}</strong></td>
         <td>${p.cliente?.nome || "-"}</td>
@@ -64,7 +70,9 @@ async function filtrarPedidos() {
           <button onclick="verDetalhePedido('${p.id}')">Detalhe</button>
         </td>
       </tr>
-    `).join("");
+    `,
+      )
+      .join("");
   }
 }
 

@@ -95,17 +95,22 @@ function adicionarItem(dados) {
 
 function renderizarItens() {
   const div = document.getElementById("lista-itens");
-  div.innerHTML = itensPedido.map((item, idx) => {
-    const produto = produtosCache.find((p) => p.id === item.produto_id);
-    return `
+  div.innerHTML = itensPedido
+    .map((item, idx) => {
+      const produto = produtosCache.find((p) => p.id === item.produto_id);
+      return `
       <div class="pedido-linha-item">
         <select onchange="alterarItemProduto(${idx}, this.value)" style="min-width:200px">
           <option value="">Selecione...</option>
-          ${produtosCache.map((p) => `
+          ${produtosCache
+            .map(
+              (p) => `
             <option value="${p.id}" ${p.id === item.produto_id ? "selected" : ""}>
               ${p.nome} — ${FormatarMoeda(p.preco)}
             </option>
-          `).join("")}
+          `,
+            )
+            .join("")}
         </select>
         <input class="qtd" type="number" min="1" value="${item.quantidade}" onchange="alterarItemQtd(${idx}, this.value)" />
         <input class="preco" type="number" step="0.01" value="${item.preco_unitario}" onchange="alterarItemPreco(${idx}, this.value)" />
@@ -115,7 +120,8 @@ function renderizarItens() {
         <button class="btn-perigo" onclick="removerItem(${idx})" style="width:auto">X</button>
       </div>
     `;
-  }).join("");
+    })
+    .join("");
 
   atualizarResumo();
 }
@@ -175,8 +181,8 @@ function atualizarResumo() {
   itemsValidos.forEach((item) => {
     const produto = produtosCache.find((p) => p.id === item.produto_id);
     const subtotal = item.quantidade * item.preco_unitario;
-    const valorLiquido = subtotal - (subtotal * icmsPercentual / 100);
-    const comissao = subtotal * comissaoPercentual / 100;
+    const valorLiquido = subtotal - (subtotal * icmsPercentual) / 100;
+    const comissao = (subtotal * comissaoPercentual) / 100;
     valorTotal += subtotal;
 
     linhasItens += `
@@ -190,8 +196,8 @@ function atualizarResumo() {
     `;
   });
 
-  const valorTotalLiquido = valorTotal - (valorTotal * icmsPercentual / 100);
-  const comissaoTotal = valorTotal * comissaoPercentual / 100;
+  const valorTotalLiquido = valorTotal - (valorTotal * icmsPercentual) / 100;
+  const comissaoTotal = (valorTotal * comissaoPercentual) / 100;
 
   resumo.innerHTML = `
     <h3>Resumo</h3>
@@ -202,7 +208,7 @@ function atualizarResumo() {
     </div>
     <div class="linha-resumo">
       <span>ICMS (${icmsPercentual}%):</span>
-      <span>-${FormatarMoeda(valorTotal * icmsPercentual / 100)}</span>
+      <span>-${FormatarMoeda((valorTotal * icmsPercentual) / 100)}</span>
     </div>
     <div class="linha-resumo">
       <span>Valor Total Líquido:</span>

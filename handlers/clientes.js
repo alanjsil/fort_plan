@@ -1,10 +1,7 @@
 const supabase = require("../services/supabaseClient");
 
 async function listar() {
-  const { data, error } = await supabase
-    .from("clientes")
-    .select("*, estado:estados(*)")
-    .order("nome");
+  const { data, error } = await supabase.from("clientes").select("*, estado:estados(*)").order("nome");
 
   if (error) throw new Error(error.message);
   return data;
@@ -39,10 +36,7 @@ async function atualizar(event, { id, ...campos }) {
 }
 
 async function remover(event, id) {
-  const { error } = await supabase
-    .from("clientes")
-    .delete()
-    .eq("id", id);
+  const { error } = await supabase.from("clientes").delete().eq("id", id);
 
   if (error) throw new Error(error.message);
   return { ok: true };

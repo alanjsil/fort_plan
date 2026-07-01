@@ -45,11 +45,12 @@ async function carregarDetalhePedido(id) {
           </tr>
         </thead>
         <tbody>
-          ${pedido.itens.map((item) => {
-            const subtotal = item.quantidade * item.preco_unitario;
-            const valorLiquido = subtotal - (subtotal * icms / 100);
-            const comissaoItem = subtotal * comissao / 100;
-            return `
+          ${pedido.itens
+            .map((item) => {
+              const subtotal = item.quantidade * item.preco_unitario;
+              const valorLiquido = subtotal - (subtotal * icms) / 100;
+              const comissaoItem = (subtotal * comissao) / 100;
+              return `
               <tr>
                 <td>${item.produto?.nome || "-"}</td>
                 <td>${item.quantidade}</td>
@@ -59,7 +60,8 @@ async function carregarDetalhePedido(id) {
                 <td>${FormatarMoeda(comissaoItem)}</td>
               </tr>
             `;
-          }).join("")}
+            })
+            .join("")}
         </tbody>
       </table>
 
@@ -70,15 +72,15 @@ async function carregarDetalhePedido(id) {
         </div>
         <div class="linha-resumo">
           <span>ICMS (${icms}%):</span>
-          <span>-${FormatarMoeda(pedido.valor_total * icms / 100)}</span>
+          <span>-${FormatarMoeda((pedido.valor_total * icms) / 100)}</span>
         </div>
         <div class="linha-resumo">
           <span>Valor Total Líquido:</span>
-          <span>${FormatarMoeda(pedido.valor_total - (pedido.valor_total * icms / 100))}</span>
+          <span>${FormatarMoeda(pedido.valor_total - (pedido.valor_total * icms) / 100)}</span>
         </div>
         <div class="linha-resumo">
           <span>Comissão (${comissao}%):</span>
-          <span>${FormatarMoeda(pedido.valor_total * comissao / 100)}</span>
+          <span>${FormatarMoeda((pedido.valor_total * comissao) / 100)}</span>
         </div>
         <div class="linha-resumo total">
           <span>Total do Pedido:</span>
@@ -89,12 +91,20 @@ async function carregarDetalhePedido(id) {
       ${pedido.observacoes ? `<div style="margin-top:12px"><strong>Observações:</strong> ${pedido.observacoes}</div>` : ""}
 
       <div class="acoes" style="margin-top:20px">
-        ${pedido.status === "aberto" ? `
+        ${
+          pedido.status === "aberto"
+            ? `
           <button class="btn-sucesso" onclick="alterarStatusPedido('${pedido.id}', 'faturado')">Faturar</button>
-        ` : ""}
-        ${pedido.status !== "cancelado" ? `
+        `
+            : ""
+        }
+        ${
+          pedido.status !== "cancelado"
+            ? `
           <button class="btn-perigo" onclick="alterarStatusPedido('${pedido.id}', 'cancelado')">Cancelar</button>
-        ` : ""}
+        `
+            : ""
+        }
         <button class="btn-secundario" onclick="window.navegarPara('pedidos-lista')">Voltar</button>
       </div>
     </div>

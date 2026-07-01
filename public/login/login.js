@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const telaLogin = document.getElementById("tela-login");
   const telaPrincipal = document.getElementById("tela-principal");
 
+  // #TODO Falta botão de permanecer conectado
   async function tentarRestaurarSessao() {
     const sessao = await window.electronAPI.getSessao();
     if (sessao) {

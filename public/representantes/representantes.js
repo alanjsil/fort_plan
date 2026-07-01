@@ -4,10 +4,7 @@ async function carregarRepresentantes() {
   const div = document.getElementById("tela-representantes");
   const podeEditar = podeEscrever();
 
-  const [representantes, estados] = await Promise.all([
-    window.electronAPI.listarRepresentantes(),
-    window.electronAPI.listarEstados(),
-  ]);
+  const [representantes, estados] = await Promise.all([window.electronAPI.listarRepresentantes(), window.electronAPI.listarEstados()]);
   estadosCache = estados;
 
   div.innerHTML = `
@@ -26,19 +23,27 @@ async function carregarRepresentantes() {
         </tr>
       </thead>
       <tbody>
-        ${representantes.map((r) => `
+        ${representantes
+          .map(
+            (r) => `
           <tr>
             <td>${r.nome}</td>
             <td>${r.comissao_percentual}%</td>
             <td>${r.estado?.uf || "-"}</td>
-            ${podeEditar ? `
+            ${
+              podeEditar
+                ? `
               <td class="acoes">
                 <button onclick="editarRepresentante('${r.id}')">Editar</button>
                 <button class="btn-perigo" onclick="removerRepresentante('${r.id}')">Remover</button>
               </td>
-            ` : ""}
+            `
+                : ""
+            }
           </tr>
-        `).join("")}
+        `,
+          )
+          .join("")}
       </tbody>
     </table>
   `;
@@ -66,9 +71,13 @@ function abrirFormRepresentante(dados) {
       <label>Estado</label>
       <select id="rep-estado">
         <option value="">Selecione...</option>
-        ${estadosCache.map((e) => `
+        ${estadosCache
+          .map(
+            (e) => `
           <option value="${e.id}" ${dados?.estado_id === e.id ? "selected" : ""}>${e.nome} (${e.uf})</option>
-        `).join("")}
+        `,
+          )
+          .join("")}
       </select>
     </div>
     <div class="acoes-form">

@@ -7,19 +7,11 @@ async function criar(event, dados) {
     throw new Error("Pedido precisa de ao menos 1 item");
   }
 
-  const { data: representante } = await supabase
-    .from("representantes")
-    .select("comissao_percentual")
-    .eq("id", representante_id)
-    .single();
+  const { data: representante } = await supabase.from("representantes").select("comissao_percentual").eq("id", representante_id).single();
 
   if (!representante) throw new Error("Representante não encontrado");
 
-  const { data: estado } = await supabase
-    .from("estados")
-    .select("icms")
-    .eq("id", estado_id)
-    .single();
+  const { data: estado } = await supabase.from("estados").select("icms").eq("id", estado_id).single();
 
   if (!estado) throw new Error("Estado não encontrado");
 
@@ -29,12 +21,11 @@ async function criar(event, dados) {
     preco_unitario: item.preco_unitario,
   }));
 
-  const valorTotalItens = itensFormatados.reduce(
-    (acc, item) => acc + item.quantidade * item.preco_unitario,
-    0
-  );
+  const valorTotalItens = itensFormatados.reduce((acc, item) => acc + item.quantidade * item.preco_unitario, 0);
 
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   const { data: pedido, error: erroPedido } = await supabase
     .from("pedidos")
@@ -56,9 +47,7 @@ async function criar(event, dados) {
     pedido_id: pedido.id,
   }));
 
-  const { error: erroItens } = await supabase
-    .from("pedido_itens")
-    .insert(itensInserir);
+  const { error: erroItens } = await supabase.from("pedido_itens").insert(itensInserir);
 
   if (erroItens) throw new Error(erroItens.message);
 
@@ -95,12 +84,7 @@ async function buscarPorId(event, id) {
 }
 
 async function atualizarStatus(event, { id, status }) {
-  const { data, error } = await supabase
-    .from("pedidos")
-    .update({ status })
-    .eq("id", id)
-    .select()
-    .single();
+  const { data, error } = await supabase.from("pedidos").update({ status }).eq("id", id).select().single();
 
   if (error) throw new Error(error.message);
   return data;

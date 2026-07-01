@@ -4,10 +4,7 @@ async function carregarClientes() {
   const div = document.getElementById("tela-clientes");
   const podeEditar = podeEscrever();
 
-  const [clientes, estados] = await Promise.all([
-    window.electronAPI.listarClientes(),
-    window.electronAPI.listarEstados(),
-  ]);
+  const [clientes, estados] = await Promise.all([window.electronAPI.listarClientes(), window.electronAPI.listarEstados()]);
   estadosCacheClientes = estados;
 
   div.innerHTML = `
@@ -27,20 +24,28 @@ async function carregarClientes() {
         </tr>
       </thead>
       <tbody>
-        ${clientes.map((c) => `
+        ${clientes
+          .map(
+            (c) => `
           <tr>
             <td>${c.nome}</td>
             <td>${c.cnpj || "-"}</td>
             <td>${c.contato || "-"}</td>
             <td>${c.estado?.uf || "-"}</td>
-            ${podeEditar ? `
+            ${
+              podeEditar
+                ? `
               <td class="acoes">
                 <button onclick="editarCliente('${c.id}')">Editar</button>
                 <button class="btn-perigo" onclick="removerCliente('${c.id}')">Remover</button>
               </td>
-            ` : ""}
+            `
+                : ""
+            }
           </tr>
-        `).join("")}
+        `,
+          )
+          .join("")}
       </tbody>
     </table>
   `;
@@ -72,9 +77,13 @@ function abrirFormCliente(dados) {
       <label>Estado</label>
       <select id="cli-estado">
         <option value="">Selecione...</option>
-        ${estadosCacheClientes.map((e) => `
+        ${estadosCacheClientes
+          .map(
+            (e) => `
           <option value="${e.id}" ${dados?.estado_id === e.id ? "selected" : ""}>${e.nome} (${e.uf})</option>
-        `).join("")}
+        `,
+          )
+          .join("")}
       </select>
     </div>
     <div class="acoes-form">

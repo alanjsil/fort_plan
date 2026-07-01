@@ -20,19 +20,27 @@ async function carregarEstados() {
         </tr>
       </thead>
       <tbody>
-        ${estados.map((e) => `
+        ${estados
+          .map(
+            (e) => `
           <tr>
             <td><strong>${e.uf}</strong></td>
             <td>${e.nome}</td>
             <td>${e.icms}%</td>
-            ${podeEditar ? `
+            ${
+              podeEditar
+                ? `
               <td class="acoes">
                 <button onclick="editarEstado('${e.id}')">Editar</button>
                 <button class="btn-perigo" onclick="removerEstado('${e.id}')">Remover</button>
               </td>
-            ` : ""}
+            `
+                : ""
+            }
           </tr>
-        `).join("")}
+        `,
+          )
+          .join("")}
       </tbody>
     </table>
   `;

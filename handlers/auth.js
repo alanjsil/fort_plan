@@ -12,11 +12,7 @@ async function login(event, { email, senha }) {
 
   salvarSessao(data.session);
 
-  const { data: perfil } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("id", data.user.id)
-    .single();
+  const { data: perfil } = await supabase.from("profiles").select("*").eq("id", data.user.id).single();
 
   setUsuario(data.user, perfil);
 
@@ -41,25 +37,19 @@ async function getSessao() {
     return null;
   }
 
-  const { data: perfil } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("id", data.user.id)
-    .single();
+  const { data: perfil } = await supabase.from("profiles").select("*").eq("id", data.user.id).single();
 
   setUsuario(data.user, perfil);
   return { usuario: data.user, perfil };
 }
 
 async function getPerfil() {
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (!user) return null;
 
-  const { data: perfil } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("id", user.id)
-    .single();
+  const { data: perfil } = await supabase.from("profiles").select("*").eq("id", user.id).single();
 
   return perfil;
 }

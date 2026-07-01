@@ -56,7 +56,8 @@ body {
   color: #333;
 }
 
-.campo input, .campo select {
+.campo input,
+.campo select {
   width: 100%;
   padding: 10px 12px;
   border: 1px solid #ddd;
@@ -65,7 +66,8 @@ body {
   transition: border-color 0.2s;
 }
 
-.campo input:focus, .campo select:focus {
+.campo input:focus,
+.campo select:focus {
   outline: none;
   border-color: #4361ee;
   box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.15);
@@ -211,7 +213,8 @@ table {
   box-shadow: 0 1px 6px rgba(0, 0, 0, 0.06);
 }
 
-th, td {
+th,
+td {
   padding: 10px 14px;
   text-align: left;
   font-size: 13px;
@@ -261,7 +264,8 @@ tr:hover td {
   align-items: center;
 }
 
-.filtros select, .filtros input {
+.filtros select,
+.filtros input {
   padding: 8px 10px;
   border: 1px solid #ddd;
   border-radius: 6px;
