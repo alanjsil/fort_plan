@@ -1,0 +1,76 @@
+{
+  "root": true,
+  "extends": "eslint:recommended",
+  "env": {
+    "es2022": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 2022
+  },
+  "overrides": [
+    {
+      "files": ["main.js", "preload.js", "handlers/**/*.js", "services/**/*.js"],
+      "env": {
+        "node": true,
+        "commonjs": true
+      },
+      "parserOptions": {
+        "sourceType": "script"
+      }
+    },
+    {
+      "files": ["public/**/*.js"],
+      "env": {
+        "browser": true
+      },
+      "parserOptions": {
+        "sourceType": "script"
+      },
+      "globals": {
+        "FormatarMoeda": "writable",
+        "calcularItem": "writable",
+        "calcularTotais": "writable",
+        "definirPerfil": "writable",
+        "getPerfilAtual": "writable",
+        "podeEscrever": "writable",
+        "ehAdmin": "writable",
+        "mostrarToast": "writable",
+        "mostrarConfirmacao": "writable",
+        "carregarTela": "writable",
+        "carregarProdutos": "writable",
+        "carregarRepresentantes": "writable",
+        "carregarEstados": "writable",
+        "carregarClientes": "writable",
+        "carregarNovoPedido": "writable",
+        "carregarListaPedidos": "writable",
+        "carregarDetalhePedido": "writable"
+      },
+      "rules": {
+        "no-unused-vars": ["warn", { "vars": "local" }],
+        "no-redeclare": "off"
+      }
+    },
+    {
+      "files": ["scripts/**/*.mjs", "vitest.config.js"],
+      "env": {
+        "node": true
+      },
+      "parserOptions": {
+        "sourceType": "module"
+      }
+    },
+    {
+      "files": ["test/**/*.js"],
+      "env": {
+        "node": true
+      },
+      "parserOptions": {
+        "sourceType": "module"
+      }
+    }
+  ],
+  "rules": {
+    "no-unused-vars": "warn",
+    "no-undef": "error"
+  }
+}

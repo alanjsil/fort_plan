@@ -13,28 +13,21 @@
       //Pastas
       ".github": false, // Somente o teste de CI
       "build": false, // Somente o icon do APP
-      "dist-ts": false, // Pasta com os maps do ts
       ".vscode": true,
 
       // Arquivos
-      ".env": false,
+      ".env": true,
       ".gitignore": true,
       "opencode.json": true,
       ".gitattributes": true,
       "package-lock.json": true,
 
       // Arquivos de configuração
-      "tsconfig.json": false,
-      "vitest.config.js": false,
-      "eslint.config.mjs": false,
-      "playwright.config.ts": false,
-      "vitest.config.integrado.js": false,
-
-      // Documentos
-      "README.md": false, // ATIVAR
-      "LICENSE.md": false,
-
-      "scripts": false, // ATIVAR
+      "tsconfig.json": true,
+      "vitest.config.js": true,
+      ".eslintrc.json": true,
+      ".eslintignore": true,
+      "vitest.config.integrado.js": true,
 
       "AGENTS.md": true, // ATIVAR
       "node_modules": true,
