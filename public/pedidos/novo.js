@@ -60,7 +60,7 @@ async function carregarNovoPedido() {
 
     <div id="resumo-pedido" class="pedido-resumo oculto"></div>
 
-    <button id="btn-salvar-pedido" class="btn-sucesso oculto" onclick="salvarPedido()" style="margin-top:16px;width:auto">
+    <button id="btn-salvar-pedido" class="btn-sucesso oculto" onclick="salvarPedido(this)" style="margin-top:16px;width:auto">
       Salvar Pedido
     </button>
   `;
@@ -113,7 +113,7 @@ function renderizarItens() {
             .join("")}
         </select>
         <input class="qtd" type="number" min="1" value="${item.quantidade}" onchange="alterarItemQtd(${idx}, this.value)" />
-        <input class="preco" type="number" step="0.01" value="${item.preco_unitario}" onchange="alterarItemPreco(${idx}, this.value)" />
+        <input class="preco" type="text" value="${FormatarMoeda(item.preco_unitario)}" readonly />
         <span class="info-item">
           ${produto ? `Subtotal: ${FormatarMoeda(item.quantidade * item.preco_unitario)}` : ""}
         </span>
@@ -140,10 +140,6 @@ function alterarItemQtd(idx, valor) {
   renderizarItens();
 }
 
-function alterarItemPreco(idx, valor) {
-  itensPedido[idx].preco_unitario = parseFloat(valor) || 0;
-  renderizarItens();
-}
 
 function removerItem(idx) {
   itensPedido.splice(idx, 1);
@@ -179,53 +175,54 @@ function atualizarResumo() {
   let linhasItens = "";
 
   itemsValidos.forEach((item) => {
-    const produto = produtosCache.find((p) => p.id === item.produto_id);
-    const subtotal = item.quantidade * item.preco_unitario;
-    const valorLiquido = subtotal - (subtotal * icmsPercentual) / 100;
-    const comissao = (subtotal * comissaoPercentual) / 100;
-    valorTotal += subtotal;
+    var produto = produtosCache.find(function (p) { return p.id === item.produto_id; });
+    var itemCalc = calcularItem(item.quantidade, item.preco_unitario, icmsPercentual, comissaoPercentual);
+    valorTotal += itemCalc.subtotal;
 
-    linhasItens += `
-      <div style="font-size:13px;padding:4px 0;border-bottom:1px solid #eee">
-        <strong>${produto?.nome || "Produto"}</strong> —
-        ${item.quantidade}x ${FormatarMoeda(item.preco_unitario)} =
-        ${FormatarMoeda(subtotal)} |
-        Liq: ${FormatarMoeda(valorLiquido)} |
-        Com: ${FormatarMoeda(comissao)}
-      </div>
-    `;
+    linhasItens +=
+      '<div style="font-size:13px;padding:4px 0;border-bottom:1px solid #eee">' +
+        "<strong>" + (produto?.nome || "Produto") + "</strong> \u2014 " +
+        item.quantidade + "x " + FormatarMoeda(item.preco_unitario) + " = " +
+        FormatarMoeda(itemCalc.subtotal) + " | " +
+        "Liq: " + FormatarMoeda(itemCalc.valorLiquido) + " | " +
+        "Com: " + FormatarMoeda(itemCalc.comissao) +
+      "</div>";
   });
 
-  const valorTotalLiquido = valorTotal - (valorTotal * icmsPercentual) / 100;
-  const comissaoTotal = (valorTotal * comissaoPercentual) / 100;
+  var totais = calcularTotais(valorTotal, icmsPercentual, comissaoPercentual);
 
-  resumo.innerHTML = `
-    <h3>Resumo</h3>
-    ${linhasItens}
-    <div class="linha-resumo" style="margin-top:8px">
-      <span>Valor Total Bruto:</span>
-      <span>${FormatarMoeda(valorTotal)}</span>
-    </div>
-    <div class="linha-resumo">
-      <span>ICMS (${icmsPercentual}%):</span>
-      <span>-${FormatarMoeda((valorTotal * icmsPercentual) / 100)}</span>
-    </div>
-    <div class="linha-resumo">
-      <span>Valor Total Líquido:</span>
-      <span>${FormatarMoeda(valorTotalLiquido)}</span>
-    </div>
-    <div class="linha-resumo">
-      <span>Comissão (${comissaoPercentual}%):</span>
-      <span>${FormatarMoeda(comissaoTotal)}</span>
-    </div>
-    <div class="linha-resumo total">
-      <span>Total do Pedido:</span>
-      <span>${FormatarMoeda(valorTotal)}</span>
-    </div>
-  `;
+  resumo.innerHTML =
+    "<h3>Resumo</h3>" +
+    linhasItens +
+    '<div class="linha-resumo" style="margin-top:8px">' +
+      "<span>Valor Total Bruto:</span>" +
+      "<span>" + FormatarMoeda(totais.valorTotal) + "</span>" +
+    "</div>" +
+    '<div class="linha-resumo">' +
+      "<span>ICMS (" + icmsPercentual + "%):</span>" +
+      "<span>-" + FormatarMoeda(totais.valorIcms) + "</span>" +
+    "</div>" +
+    '<div class="linha-resumo">' +
+      "<span>Valor Total L\u00EDquido:</span>" +
+      "<span>" + FormatarMoeda(totais.valorTotalLiquido) + "</span>" +
+    "</div>" +
+    '<div class="linha-resumo">' +
+      "<span>Comiss\u00E3o (" + comissaoPercentual + "%):</span>" +
+      "<span>" + FormatarMoeda(totais.comissaoTotal) + "</span>" +
+    "</div>" +
+    '<div class="linha-resumo total">' +
+      "<span>Total do Pedido:</span>" +
+      "<span>" + FormatarMoeda(totais.valorTotal) + "</span>" +
+    "</div>";
 }
 
-async function salvarPedido() {
+async function salvarPedido(btn) {
+  if (btn.dataset.salvando === "true") return;
+
+  btn.dataset.salvando = "true";
+  btn.disabled = true;
+  btn.textContent = "Salvando...";
+
   const clienteId = document.getElementById("ped-cliente").value;
   const selRep = document.getElementById("ped-representante");
   const representanteId = selRep.value;
@@ -233,13 +230,19 @@ async function salvarPedido() {
   const estadoId = optRep ? optRep.dataset.estado : null;
 
   if (!clienteId || !representanteId || !estadoId) {
-    alert("Preencha cliente e representante");
+    btn.dataset.salvando = "false";
+    btn.disabled = false;
+    btn.textContent = "Salvar Pedido";
+    mostrarToast("Preencha cliente e representante", "erro");
     return;
   }
 
   const itensValidos = itensPedido.filter((i) => i.produto_id && i.quantidade > 0);
   if (itensValidos.length === 0) {
-    alert("Adicione ao menos 1 item ao pedido");
+    btn.dataset.salvando = "false";
+    btn.disabled = false;
+    btn.textContent = "Salvar Pedido";
+    mostrarToast("Adicione ao menos 1 item ao pedido", "erro");
     return;
   }
 
@@ -255,9 +258,12 @@ async function salvarPedido() {
       })),
     });
 
-    alert("Pedido criado com sucesso!");
+    mostrarToast("Pedido criado com sucesso!", "sucesso");
     carregarNovoPedido();
   } catch (err) {
-    alert("Erro: " + err.message);
+    btn.dataset.salvando = "false";
+    btn.disabled = false;
+    btn.textContent = "Salvar Pedido";
+    mostrarToast("Erro: " + err.message, "erro");
   }
 }

@@ -123,7 +123,7 @@ async function editarCliente(id) {
 }
 
 async function removerCliente(id) {
-  if (!confirm("Remover cliente?")) return;
+  if (!(await mostrarConfirmacao("Remover cliente?"))) return;
   await window.electronAPI.removerCliente(id);
   carregarClientes();
 }

@@ -52,13 +52,12 @@ A mesma lógica de subtotal - (subtotal _ icms/100) e subtotal _ comissao/100 es
 
 ## 8. encryptionKey do electron-store fixo no código
 
+```
 jsencryptionKey: "fort-planilha-sessao-key-v1"
+```
+
 Isso não é uma vulnerabilidade grave (é só ofuscação, o electron-store já é assim por natureza), mas vale documentar que isso não protege contra alguém com acesso ao binário — só evita leitura casual do arquivo de sessão. Se quiser proteção real, a chave deveria vir do keychain do SO (keytar), não do código-fonte.
 
-## 9. numero_pedido como serial
+## 9. numero_pedido como serial (CORRIGIDO)
 
 Funciona, mas gera "buracos" na numeração se um pedido for deletado (só admin/gerente deletam, então baixo risco, mas fica o registro).
-
-```
-
-```

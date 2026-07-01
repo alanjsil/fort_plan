@@ -116,7 +116,7 @@ async function editarRepresentante(id) {
 }
 
 async function removerRepresentante(id) {
-  if (!confirm("Remover representante?")) return;
+  if (!(await mostrarConfirmacao("Remover representante?"))) return;
   await window.electronAPI.removerRepresentante(id);
   carregarRepresentantes();
 }

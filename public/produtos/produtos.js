@@ -110,7 +110,7 @@ async function editarProduto(id) {
 }
 
 async function removerProduto(id) {
-  if (!confirm("Remover produto?")) return;
+  if (!(await mostrarConfirmacao("Remover produto?"))) return;
   await window.electronAPI.removerProduto(id);
   carregarProdutos();
 }

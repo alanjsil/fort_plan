@@ -104,7 +104,7 @@ async function editarEstado(id) {
 }
 
 async function removerEstado(id) {
-  if (!confirm("Remover estado?")) return;
+  if (!(await mostrarConfirmacao("Remover estado?"))) return;
   await window.electronAPI.removerEstado(id);
   carregarEstados();
 }

@@ -46,47 +46,50 @@ async function carregarDetalhePedido(id) {
         </thead>
         <tbody>
           ${pedido.itens
-            .map((item) => {
-              const subtotal = item.quantidade * item.preco_unitario;
-              const valorLiquido = subtotal - (subtotal * icms) / 100;
-              const comissaoItem = (subtotal * comissao) / 100;
-              return `
-              <tr>
-                <td>${item.produto?.nome || "-"}</td>
-                <td>${item.quantidade}</td>
-                <td>${FormatarMoeda(item.preco_unitario)}</td>
-                <td>${FormatarMoeda(subtotal)}</td>
-                <td>${FormatarMoeda(valorLiquido)}</td>
-                <td>${FormatarMoeda(comissaoItem)}</td>
-              </tr>
-            `;
+            .map(function (item) {
+              var itemCalc = calcularItem(item.quantidade, item.preco_unitario, icms, comissao);
+              return (
+              "<tr>" +
+                "<td>" + (item.produto?.nome || "-") + "</td>" +
+                "<td>" + item.quantidade + "</td>" +
+                "<td>" + FormatarMoeda(item.preco_unitario) + "</td>" +
+                "<td>" + FormatarMoeda(itemCalc.subtotal) + "</td>" +
+                "<td>" + FormatarMoeda(itemCalc.valorLiquido) + "</td>" +
+                "<td>" + FormatarMoeda(itemCalc.comissao) + "</td>" +
+              "</tr>"
+              );
             })
             .join("")}
         </tbody>
       </table>
 
-      <div class="pedido-resumo" style="margin-top:16px">
-        <div class="linha-resumo">
-          <span>Valor Total Bruto:</span>
-          <span>${FormatarMoeda(pedido.valor_total)}</span>
-        </div>
-        <div class="linha-resumo">
-          <span>ICMS (${icms}%):</span>
-          <span>-${FormatarMoeda((pedido.valor_total * icms) / 100)}</span>
-        </div>
-        <div class="linha-resumo">
-          <span>Valor Total Líquido:</span>
-          <span>${FormatarMoeda(pedido.valor_total - (pedido.valor_total * icms) / 100)}</span>
-        </div>
-        <div class="linha-resumo">
-          <span>Comissão (${comissao}%):</span>
-          <span>${FormatarMoeda((pedido.valor_total * comissao) / 100)}</span>
-        </div>
-        <div class="linha-resumo total">
-          <span>Total do Pedido:</span>
-          <span>${FormatarMoeda(pedido.valor_total)}</span>
-        </div>
-      </div>
+      ${function () {
+        var totais = calcularTotais(pedido.valor_total, icms, comissao);
+        return (
+        '<div class="pedido-resumo" style="margin-top:16px">' +
+          '<div class="linha-resumo">' +
+            "<span>Valor Total Bruto:</span>" +
+            "<span>" + FormatarMoeda(totais.valorTotal) + "</span>" +
+          "</div>" +
+          '<div class="linha-resumo">' +
+            "<span>ICMS (" + icms + "%):</span>" +
+            "<span>-" + FormatarMoeda(totais.valorIcms) + "</span>" +
+          "</div>" +
+          '<div class="linha-resumo">' +
+            "<span>Valor Total L\u00EDquido:</span>" +
+            "<span>" + FormatarMoeda(totais.valorTotalLiquido) + "</span>" +
+          "</div>" +
+          '<div class="linha-resumo">' +
+            "<span>Comiss\u00E3o (" + comissao + "%):</span>" +
+            "<span>" + FormatarMoeda(totais.comissaoTotal) + "</span>" +
+          "</div>" +
+          '<div class="linha-resumo total">' +
+            "<span>Total do Pedido:</span>" +
+            "<span>" + FormatarMoeda(totais.valorTotal) + "</span>" +
+          "</div>" +
+        "</div>"
+        );
+      }()}
 
       ${pedido.observacoes ? `<div style="margin-top:12px"><strong>Observações:</strong> ${pedido.observacoes}</div>` : ""}
 
@@ -112,11 +115,11 @@ async function carregarDetalhePedido(id) {
 }
 
 async function alterarStatusPedido(id, novoStatus) {
-  if (!confirm(`Alterar status para "${novoStatus}"?`)) return;
+  if (!(await mostrarConfirmacao(`Alterar status para "${novoStatus}"?`))) return;
   try {
     await window.electronAPI.atualizarStatusPedido({ id, status: novoStatus });
     carregarDetalhePedido(id);
   } catch (err) {
-    alert("Erro: " + err.message);
+    mostrarToast("Erro: " + err.message, "erro");
   }
 }
