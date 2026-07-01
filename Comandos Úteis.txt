@@ -1,0 +1,122 @@
+rm -r node_modules
+del package-lock.json
+npm install
+npm audit
+============================================
+npx asar list .\app.asar
+============================================
+git config core.autocrlf false
+git config core.autocrlf && git add --renormalize . && git status --short | head -20
+============================================
+npm version patch  # ou minor / major
+git push --follow-tags
+============================================
+const fs = require("fs");
+const path = require("path");
+
+fs.writeFileSync(
+  path.join(app.getPath("desktop"), "debug.txt"),
+  JSON.stringify(
+    {
+      NODE_ENV: process.env.NODE_ENV,
+      isPackaged: app.isPackaged,
+      execPath: process.execPath,
+    },
+    null,
+    2,
+  ),
+);
+
+console.log({
+  NODE_ENV: process.env.NODE_ENV,
+  isPackaged: app.isPackaged,
+  execPath: process.execPath,
+});
+============================================
+Inside that directory, you can run several commands:
+
+  npx playwright test
+    Runs the end-to-end tests.
+
+  npx playwright test --ui
+    Starts the interactive UI mode.
+
+  npx playwright test --project=chromium
+    Runs the tests only on Desktop Chrome.
+
+  npx playwright test example
+    Runs the tests in a specific file.
+
+  npx playwright test --debug
+    Runs the tests in debug mode.
+
+  npx playwright codegen
+    Auto generate tests with Codegen.
+
+We suggest that you begin by typing:
+
+    npx playwright test
+
+And check out the following files:
+  - .\test\e2e\example.spec.ts - Example end-to-end test
+  - .\playwright.config.ts - Playwright Test configuration
+============================================
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  release:
+    strategy:
+      matrix:
+        os: [windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      # - name: Check token
+      #   shell: bash
+      #   env:
+      #     GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      #   run: |
+      #     if [ -z "$GH_TOKEN" ]; then
+      #       echo "TOKEN VAZIO"
+      #       exit 1
+      #     fi
+
+      #     echo "TOKEN PRESENTE"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build and publish (Windows)
+        if: matrix.os == 'windows-latest'
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          npm run build:ts
+          npx electron-builder --win --publish always
+
+      - name: Listar arquivos gerados (debug)
+        if: matrix.os == 'windows-latest'
+        run: |
+          dir dist\
+
+      # - name: Build and publish (Mac)
+      #   if: matrix.os == 'macos-latestyyyyyyy'
+      #   env:
+      #     GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      #   run: |
+      #     npm run build:ts
+      #     npx electron-builder --mac --publish always
