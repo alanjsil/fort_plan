@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const btn = document.getElementById("btn-login");
   const telaLogin = document.getElementById("tela-login");
   const telaPrincipal = document.getElementById("tela-principal");
+  const telaCarregando = document.getElementById("tela-carregando");
 
   // #TODO Falta botão de permanecer conectado
   async function tentarRestaurarSessao() {
@@ -48,6 +49,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   const sessaoRestaurada = await tentarRestaurarSessao();
+  telaCarregando.classList.add("oculto");
   if (!sessaoRestaurada) {
     telaLogin.classList.remove("oculto");
   }
