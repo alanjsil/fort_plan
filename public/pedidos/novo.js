@@ -252,7 +252,6 @@ async function salvarPedido() {
       itens: itensValidos.map((i) => ({
         produto_id: i.produto_id,
         quantidade: i.quantidade,
-        preco_unitario: i.preco_unitario,
       })),
     });
 

@@ -77,6 +77,8 @@ create table pedidos (
   status status_pedido not null default 'aberto',
   valor_total numeric(10,2) not null default 0,
   observacoes text,
+  icms_percentual numeric(5,2),
+  comissao_percentual numeric(5,2),
   created_at timestamptz default now()
 );
 
@@ -119,6 +121,79 @@ set search_path = public
 as $$
   select role from profiles where id = auth.uid();
 $$;
+
+-- 4.1 Função RPC — criar pedido + itens de forma atômica (server-side)
+create or replace function public.criar_pedido(
+  p_cliente_id uuid,
+  p_representante_id uuid,
+  p_estado_id uuid,
+  p_observacoes text,
+  p_itens jsonb
+)
+returns pedidos
+language plpgsql
+as $$
+declare
+  v_representante representantes%rowtype;
+  v_estado         estados%rowtype;
+  v_pedido         pedidos%rowtype;
+  v_item           jsonb;
+  v_produto        produtos%rowtype;
+  v_quantidade     integer;
+  v_valor_total    numeric(10,2) := 0;
+begin
+  if p_itens is null or jsonb_array_length(p_itens) = 0 then
+    raise exception 'Pedido precisa de ao menos 1 item';
+  end if;
+
+  select * into v_representante from representantes where id = p_representante_id;
+  if not found then
+    raise exception 'Representante não encontrado';
+  end if;
+
+  select * into v_estado from estados where id = p_estado_id;
+  if not found then
+    raise exception 'Estado não encontrado';
+  end if;
+
+  insert into pedidos (
+    cliente_id, representante_id, estado_id, criado_por,
+    valor_total, observacoes, icms_percentual, comissao_percentual
+  ) values (
+    p_cliente_id, p_representante_id, p_estado_id, auth.uid(),
+    0, p_observacoes, v_estado.icms, v_representante.comissao_percentual
+  )
+  returning * into v_pedido;
+
+  for v_item in select * from jsonb_array_elements(p_itens)
+  loop
+    v_quantidade := (v_item->>'quantidade')::integer;
+
+    if v_quantidade is null or v_quantidade <= 0 then
+      raise exception 'Quantidade inválida para o item';
+    end if;
+
+    select * into v_produto from produtos where id = (v_item->>'produto_id')::uuid;
+    if not found then
+      raise exception 'Produto não encontrado: %', v_item->>'produto_id';
+    end if;
+
+    v_valor_total := v_valor_total + (v_quantidade * v_produto.preco);
+
+    insert into pedido_itens (pedido_id, produto_id, quantidade, preco_unitario)
+    values (v_pedido.id, v_produto.id, v_quantidade, v_produto.preco);
+  end loop;
+
+  update pedidos
+  set valor_total = v_valor_total
+  where id = v_pedido.id
+  returning * into v_pedido;
+
+  return v_pedido;
+end;
+$$;
+
+grant execute on function public.criar_pedido(uuid, uuid, uuid, text, jsonb) to authenticated;
 
 -- ============================================================
 -- 5. ROW LEVEL SECURITY

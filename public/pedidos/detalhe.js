@@ -8,8 +8,8 @@ async function carregarDetalhePedido(id) {
     return;
   }
 
-  const icms = pedido.estado?.icms || 0;
-  const comissao = pedido.representante?.comissao_percentual || 0;
+  const icms = pedido.icms_percentual ?? 0;
+  const comissao = pedido.comissao_percentual ?? 0;
 
   div.innerHTML = `
     <div class="detalhe-pedido">

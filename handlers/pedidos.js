@@ -7,50 +7,20 @@ async function criar(event, dados) {
     throw new Error("Pedido precisa de ao menos 1 item");
   }
 
-  const { data: representante } = await supabase.from("representantes").select("comissao_percentual").eq("id", representante_id).single();
-
-  if (!representante) throw new Error("Representante não encontrado");
-
-  const { data: estado } = await supabase.from("estados").select("icms").eq("id", estado_id).single();
-
-  if (!estado) throw new Error("Estado não encontrado");
-
-  const itensFormatados = itens.map((item) => ({
+  const itensParaRpc = itens.map((item) => ({
     produto_id: item.produto_id,
     quantidade: item.quantidade,
-    preco_unitario: item.preco_unitario,
   }));
 
-  const valorTotalItens = itensFormatados.reduce((acc, item) => acc + item.quantidade * item.preco_unitario, 0);
+  const { data: pedido, error } = await supabase.rpc("criar_pedido", {
+    p_cliente_id: cliente_id,
+    p_representante_id: representante_id,
+    p_estado_id: estado_id,
+    p_observacoes: observacoes || null,
+    p_itens: itensParaRpc,
+  });
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  const { data: pedido, error: erroPedido } = await supabase
-    .from("pedidos")
-    .insert({
-      cliente_id,
-      representante_id,
-      estado_id,
-      criado_por: user.id,
-      valor_total: valorTotalItens,
-      observacoes: observacoes || null,
-    })
-    .select()
-    .single();
-
-  if (erroPedido) throw new Error(erroPedido.message);
-
-  const itensInserir = itensFormatados.map((item) => ({
-    ...item,
-    pedido_id: pedido.id,
-  }));
-
-  const { error: erroItens } = await supabase.from("pedido_itens").insert(itensInserir);
-
-  if (erroItens) throw new Error(erroItens.message);
-
+  if (error) throw new Error(error.message);
   return pedido;
 }
 
