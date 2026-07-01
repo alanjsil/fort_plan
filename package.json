@@ -1,0 +1,18 @@
+{
+  "name": "fort-planilha",
+  "version": "1.0.0",
+  "description": "Sistema de Gestão de Pedidos, Produtos e Representantes",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "vitest run"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.110.0",
+    "electron": "^43.0.0",
+    "electron-store": "^11.0.2"
+  }
+}
