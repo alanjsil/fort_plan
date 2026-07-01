@@ -37,7 +37,7 @@
       "scripts": false, // ATIVAR
 
       "AGENTS.md": false, // ATIVAR
-      "node_modules": false,
+      "node_modules": true,
     },
 
     // =========================================================

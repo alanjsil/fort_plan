@@ -12,7 +12,11 @@
   "license": "ISC",
   "dependencies": {
     "@supabase/supabase-js": "^2.110.0",
+    "dotenv": "^17.4.2",
     "electron": "^43.0.0",
     "electron-store": "^11.0.2"
+  },
+  "devDependencies": {
+    "pg": "^8.22.0"
   }
 }
