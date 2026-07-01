@@ -1,3 +1,47 @@
+function FormatarMoeda(valor) {
+  return new Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  }).format(valor);
+}
+
+function calcularItem(quantidade, precoUnitario, icmsPct, comissaoPct) {
+  var subtotal = quantidade * precoUnitario;
+  return {
+    subtotal: subtotal,
+    valorLiquido: subtotal - (subtotal * icmsPct) / 100,
+    comissao: (subtotal * comissaoPct) / 100,
+  };
+}
+
+function calcularTotais(valorTotal, icmsPct, comissaoPct) {
+  var valorIcms = (valorTotal * icmsPct) / 100;
+  return {
+    valorTotal: valorTotal,
+    valorIcms: valorIcms,
+    valorTotalLiquido: valorTotal - valorIcms,
+    comissaoTotal: (valorTotal * comissaoPct) / 100,
+  };
+}
+
+var perfilAtual = null;
+
+function definirPerfil(perfil) {
+  perfilAtual = perfil;
+}
+
+function getPerfilAtual() {
+  return perfilAtual;
+}
+
+function podeEscrever() {
+  return perfilAtual && ["admin", "gerente"].includes(perfilAtual.role);
+}
+
+function ehAdmin() {
+  return perfilAtual && perfilAtual.role === "admin";
+}
+
 function mostrarToast(mensagem, tipo, duracao) {
   if (tipo === undefined) tipo = "info";
   if (duracao === undefined) duracao = 3000;
