@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fort Planilha — Login</title>
+  <link rel="stylesheet" href="shared/estilos.css" />
+</head>
+<body>
+  <div id="app">
+    <div id="tela-login" class="tela-centralizada">
+      <div class="card-login">
+        <h1>Fort Planilha</h1>
+        <p class="subtitulo">Sistema de Gestão de Pedidos</p>
+        <form id="form-login">
+          <div class="campo">
+            <label for="email">Email</label>
+            <input type="email" id="email" required autocomplete="email" />
+          </div>
+          <div class="campo">
+            <label for="senha">Senha</label>
+            <input type="password" id="senha" required autocomplete="current-password" />
+          </div>
+          <div id="erro-login" class="erro oculto"></div>
+          <button type="submit" id="btn-login">Entrar</button>
+        </form>
+      </div>
+    </div>
+
+    <div id="tela-principal" class="oculto">
+      <nav id="navbar">
+        <div class="nav-brand">Fort Planilha</div>
+        <div class="nav-links">
+          <a href="#" data-tela="home">Início</a>
+          <a href="#" data-tela="produtos">Produtos</a>
+          <a href="#" data-tela="representantes">Representantes</a>
+          <a href="#" data-tela="estados">Estados</a>
+          <a href="#" data-tela="clientes">Clientes</a>
+          <a href="#" data-tela="pedidos-novo">Novo Pedido</a>
+          <a href="#" data-tela="pedidos-lista">Pedidos</a>
+        </div>
+        <div class="nav-user">
+          <span id="nav-usuario-nome"></span>
+          <span id="nav-role" class="badge-role"></span>
+          <button id="btn-logout" class="btn-pequeno">Sair</button>
+        </div>
+      </nav>
+
+      <main id="conteudo">
+        <div id="tela-home" class="pagina">
+          <h2>Início</h2>
+          <p>Bem-vindo ao sistema de gestão de pedidos.</p>
+        </div>
+
+        <div id="tela-produtos" class="pagina oculto"></div>
+        <div id="tela-representantes" class="pagina oculto"></div>
+        <div id="tela-estados" class="pagina oculto"></div>
+        <div id="tela-clientes" class="pagina oculto"></div>
+        <div id="tela-pedidos-novo" class="pagina oculto"></div>
+        <div id="tela-pedidos-lista" class="pagina oculto"></div>
+        <div id="tela-pedidos-detalhe" class="pagina oculto"></div>
+      </main>
+    </div>
+  </div>
+
+  <script src="shared/formatarMoeda.js"></script>
+  <script src="shared/roleGuard.js"></script>
+  <script src="login/login.js"></script>
+  <script src="shared/navbar.js"></script>
+  <script src="produtos/produtos.js"></script>
+  <script src="representantes/representantes.js"></script>
+  <script src="estados/estados.js"></script>
+  <script src="clientes/clientes.js"></script>
+  <script src="pedidos/novo.js"></script>
+  <script src="pedidos/lista.js"></script>
+  <script src="pedidos/detalhe.js"></script>
+  <script src="roteador.js"></script>
+</body>
+</html>
