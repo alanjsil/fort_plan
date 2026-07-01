@@ -19,14 +19,14 @@ async function carregarDetalhePedido(id) {
 
       <div class="detalhe-cabecalho">
         <div class="detalhe-info">
-          <strong>Cliente:</strong> ${pedido.cliente?.nome || "-"}<br />
-          <strong>CNPJ:</strong> ${pedido.cliente?.cnpj || "-"}<br />
-          <strong>Contato:</strong> ${pedido.cliente?.contato || "-"}<br />
-          <strong>UF Cliente:</strong> ${pedido.cliente?.estado?.uf || "-"}
+          <strong>Cliente:</strong> ${escapeHtml(pedido.cliente?.nome || "-")}<br />
+          <strong>CNPJ:</strong> ${escapeHtml(pedido.cliente?.cnpj || "-")}<br />
+          <strong>Contato:</strong> ${escapeHtml(pedido.cliente?.contato || "-")}<br />
+          <strong>UF Cliente:</strong> ${escapeHtml(pedido.cliente?.estado?.uf || "-")}
         </div>
         <div class="detalhe-info">
-          <strong>Representante:</strong> ${pedido.representante?.nome || "-"}<br />
-          <strong>Estado:</strong> ${pedido.estado?.nome || "-"} (${pedido.estado?.uf || "-"})<br />
+          <strong>Representante:</strong> ${escapeHtml(pedido.representante?.nome || "-")}<br />
+          <strong>Estado:</strong> ${escapeHtml(pedido.estado?.nome || "-")} (${escapeHtml(pedido.estado?.uf || "-")})<br />
           <strong>ICMS:</strong> ${icms}%<br />
           <strong>Comissão:</strong> ${comissao}%
         </div>
@@ -50,7 +50,7 @@ async function carregarDetalhePedido(id) {
               return (
                 "<tr>" +
                 "<td>" +
-                (item.produto?.nome || "-") +
+                escapeHtml(item.produto?.nome || "-") +
                 "</td>" +
                 "<td>" +
                 item.quantidade +
@@ -116,7 +116,7 @@ async function carregarDetalhePedido(id) {
         );
       })()}
 
-      ${pedido.observacoes ? `<div style="margin-top:12px"><strong>Observações:</strong> ${pedido.observacoes}</div>` : ""}
+      ${pedido.observacoes ? `<div style="margin-top:12px"><strong>Observações:</strong> ${escapeHtml(pedido.observacoes)}</div>` : ""}
 
       <div class="acoes" style="margin-top:20px">
         ${

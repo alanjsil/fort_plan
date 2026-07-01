@@ -34,8 +34,8 @@ async function carregarListaPedidos() {
             (p) => `
           <tr>
             <td><strong>${p.numero_pedido}</strong></td>
-            <td>${p.cliente?.nome || "-"}</td>
-            <td>${p.representante?.nome || "-"}</td>
+            <td>${escapeHtml(p.cliente?.nome || "-")}</td>
+            <td>${escapeHtml(p.representante?.nome || "-")}</td>
             <td>${FormatarMoeda(p.valor_total)}</td>
             <td><span class="status status-${p.status}">${p.status}</span></td>
             <td>${new Date(p.created_at).toLocaleDateString("pt-BR")}</td>
@@ -61,8 +61,8 @@ async function filtrarPedidos() {
         (p) => `
       <tr>
         <td><strong>${p.numero_pedido}</strong></td>
-        <td>${p.cliente?.nome || "-"}</td>
-        <td>${p.representante?.nome || "-"}</td>
+        <td>${escapeHtml(p.cliente?.nome || "-")}</td>
+        <td>${escapeHtml(p.representante?.nome || "-")}</td>
         <td>${FormatarMoeda(p.valor_total)}</td>
         <td><span class="status status-${p.status}">${p.status}</span></td>
         <td>${new Date(p.created_at).toLocaleDateString("pt-BR")}</td>

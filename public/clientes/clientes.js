@@ -28,10 +28,10 @@ async function carregarClientes() {
           .map(
             (c) => `
           <tr>
-            <td>${c.nome}</td>
-            <td>${c.cnpj || "-"}</td>
-            <td>${c.contato || "-"}</td>
-            <td>${c.estado?.uf || "-"}</td>
+            <td>${escapeHtml(c.nome)}</td>
+            <td>${escapeHtml(c.cnpj || "-")}</td>
+            <td>${escapeHtml(c.contato || "-")}</td>
+            <td>${escapeHtml(c.estado?.uf || "-")}</td>
             ${
               podeEditar
                 ? `
@@ -61,16 +61,16 @@ function abrirFormCliente(dados) {
     <h3>${clienteEditandoId ? "Editar" : "Novo"} Cliente</h3>
     <div class="campo">
       <label>Nome</label>
-      <input id="cli-nome" value="${dados?.nome || ""}" />
+        <input id="cli-nome" value="${escapeHtml(dados?.nome || "")}" />
     </div>
     <div class="linha">
       <div class="campo">
         <label>CNPJ</label>
-        <input id="cli-cnpj" value="${dados?.cnpj || ""}" />
+        <input id="cli-cnpj" value="${escapeHtml(dados?.cnpj || "")}" />
       </div>
       <div class="campo">
         <label>Contato</label>
-        <input id="cli-contato" value="${dados?.contato || ""}" />
+        <input id="cli-contato" value="${escapeHtml(dados?.contato || "")}" />
       </div>
     </div>
     <div class="campo">

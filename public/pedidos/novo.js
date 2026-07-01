@@ -181,7 +181,7 @@ function atualizarResumo() {
 
     linhasItens +=
       '<div style="font-size:13px;padding:4px 0;border-bottom:1px solid #eee">' +
-        "<strong>" + (produto?.nome || "Produto") + "</strong> \u2014 " +
+        "<strong>" + escapeHtml(produto?.nome || "Produto") + "</strong> \u2014 " +
         item.quantidade + "x " + FormatarMoeda(item.preco_unitario) + " = " +
         FormatarMoeda(itemCalc.subtotal) + " | " +
         "Liq: " + FormatarMoeda(itemCalc.valorLiquido) + " | " +

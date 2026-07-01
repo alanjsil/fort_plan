@@ -1,3 +1,13 @@
+function escapeHtml(str) {
+  if (str == null) return "";
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
 function FormatarMoeda(valor) {
   return new Intl.NumberFormat("pt-BR", {
     style: "currency",

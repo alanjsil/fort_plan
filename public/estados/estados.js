@@ -24,8 +24,8 @@ async function carregarEstados() {
           .map(
             (e) => `
           <tr>
-            <td><strong>${e.uf}</strong></td>
-            <td>${e.nome}</td>
+            <td><strong>${escapeHtml(e.uf)}</strong></td>
+            <td>${escapeHtml(e.nome)}</td>
             <td>${e.icms}%</td>
             ${
               podeEditar
@@ -57,16 +57,16 @@ function abrirFormEstado(dados) {
     <div class="linha">
       <div class="campo">
         <label>Nome</label>
-        <input id="est-nome" value="${dados?.nome || ""}" />
+        <input id="est-nome" value="${escapeHtml(dados?.nome || "")}" />
       </div>
       <div class="campo">
         <label>UF</label>
-        <input id="est-uf" maxlength="2" style="text-transform:uppercase" value="${dados?.uf || ""}" />
+        <input id="est-uf" maxlength="2" style="text-transform:uppercase" value="${escapeHtml(dados?.uf || "")}" />
       </div>
     </div>
     <div class="campo">
       <label>ICMS (%)</label>
-      <input id="est-icms" type="number" step="0.01" value="${dados?.icms || ""}" />
+      <input id="est-icms" type="number" step="0.01" value="${escapeHtml(dados?.icms ?? "")}" />
     </div>
     <div class="acoes-form">
       <button onclick="salvarEstado()">Salvar</button>

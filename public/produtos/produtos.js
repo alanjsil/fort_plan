@@ -25,8 +25,8 @@ async function carregarProdutos() {
           .map(
             (p) => `
           <tr>
-            <td>${p.nome}</td>
-            <td>${p.descricao}</td>
+            <td>${escapeHtml(p.nome)}</td>
+            <td>${escapeHtml(p.descricao)}</td>
             <td>${FormatarMoeda(p.preco)}</td>
             <td>${p.ativo ? "Sim" : "Não"}</td>
             ${
@@ -59,16 +59,16 @@ function abrirFormProduto(dados) {
     <div class="linha">
       <div class="campo">
         <label>Código</label>
-        <input id="prod-nome" value="${dados?.nome || ""}" />
+        <input id="prod-nome" value="${escapeHtml(dados?.nome || "")}" />
       </div>
       <div class="campo">
         <label>Preço</label>
-        <input id="prod-preco" type="number" step="0.01" value="${dados?.preco || ""}" />
+        <input id="prod-preco" type="number" step="0.01" value="${escapeHtml(dados?.preco ?? "")}" />
       </div>
     </div>
     <div class="campo">
       <label>Descrição</label>
-      <input id="prod-descricao" value="${dados?.descricao || ""}" />
+      <input id="prod-descricao" value="${escapeHtml(dados?.descricao || "")}" />
     </div>
     <div class="campo">
       <label><input type="checkbox" id="prod-ativo" ${dados?.ativo !== false ? "checked" : ""} /> Ativo</label>

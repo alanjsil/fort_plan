@@ -27,7 +27,7 @@ async function carregarRepresentantes() {
           .map(
             (r) => `
           <tr>
-            <td>${r.nome}</td>
+            <td>${escapeHtml(r.nome)}</td>
             <td>${r.comissao_percentual}%</td>
             <td>${r.estado?.uf || "-"}</td>
             ${
@@ -60,11 +60,11 @@ function abrirFormRepresentante(dados) {
     <div class="linha">
       <div class="campo">
         <label>Nome</label>
-        <input id="rep-nome" value="${dados?.nome || ""}" />
+        <input id="rep-nome" value="${escapeHtml(dados?.nome || "")}" />
       </div>
       <div class="campo">
         <label>Comissão (%)</label>
-        <input id="rep-comissao" type="number" step="0.01" value="${dados?.comissao_percentual || ""}" />
+        <input id="rep-comissao" type="number" step="0.01" value="${escapeHtml(dados?.comissao_percentual ?? "")}" />
       </div>
     </div>
     <div class="campo">
